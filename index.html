@@ -14,32 +14,72 @@
         }
         h1 {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             color: #2c3e50;
             letter-spacing: 2px;
         }
-        .gallery {
-            max-width: 1200px;
-            margin: 0 auto;
+
+        /* 按鈕切換區容器 */
+        .tab-buttons {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 40px;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
         }
+
+        /* 個別按鈕樣式 */
+        .tab-btn {
+            background-color: #ffffff;
+            border: 2px solid #e0e0e0;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .tab-btn:hover {
+            border-color: #2c3e50;
+            color: #2c3e50;
+            transform: translateY(-2px);
+        }
+
+        /* 作用中的按鈕樣式 */
+        .tab-btn.active {
+            background-color: #2c3e50;
+            color: #ffffff;
+            border-color: #2c3e50;
+            box-shadow: 0 6px 15px rgba(44, 62, 80, 0.2);
+        }
+
+        /* 展示區容器 */
+        .gallery {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* 預設隱藏所有卡片 */
         .image-card {
+            display: none;
             background: #ffffff;
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.06);
             width: 100%;
-            max-width: 900px;
+            box-sizing: border-box;
             text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 0.4s ease;
         }
-        .image-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+
+        /* 顯示目前選中的卡片 */
+        .image-card.active {
+            display: block;
         }
+
         .image-card img {
             max-width: 100%;
             height: auto;
@@ -47,13 +87,21 @@
             cursor: zoom-in;
             border: 1px solid #eee;
         }
+
         .image-title {
             margin-top: 15px;
             font-size: 1.2rem;
             font-weight: bold;
             color: #555;
         }
-        
+
+        /* 淡入動畫 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Lightbox 懸浮放大區 */
         #lightbox {
             display: none;
             position: fixed;
@@ -93,32 +141,56 @@
 
 <h1>🚇 曼谷地鐵旅遊地圖集</h1>
 
+<!-- 按鈕列 -->
+<div class="tab-buttons">
+    <button class="tab-btn active" onclick="switchMap(0)">2025 完整版</button>
+    <button class="tab-btn" onclick="switchMap(1)">2025 沿線景點版</button>
+    <button class="tab-btn" onclick="switchMap(2)">2026 建置中路線</button>
+</div>
+
+<!-- 圖片顯示區（一次僅顯示一張） -->
 <div class="gallery">
-    <!-- 第一張圖 (對應 map1.png) -->
-    <div class="image-card">
+    <!-- 第一張圖 -->
+    <div class="image-card active">
         <img src="map1.png" alt="2025 曼谷地鐵 完整版" onclick="openLightbox(this.src)">
         <div class="image-title">2025 曼谷地鐵 完整版</div>
     </div>
-    
-    <!-- 第二張圖 (對應 map2.png) -->
+
+    <!-- 第二張圖 -->
     <div class="image-card">
         <img src="map2.png" alt="2025 曼谷地鐵 完整版 (附帶全線沿線景點)" onclick="openLightbox(this.src)">
         <div class="image-title">2025 曼谷地鐵 完整版 (附帶全線沿線景點)</div>
     </div>
-    
-    <!-- 第三張圖 (對應 map3.png) -->
+
+    <!-- 第三張圖 -->
     <div class="image-card">
         <img src="map3.png" alt="2026 曼谷地鐵 (+建置中最新路線)" onclick="openLightbox(this.src)">
         <div class="image-title">2026 曼谷地鐵 (+建置中最新路線)</div>
     </div>
 </div>
 
+<!-- 放大燈箱 -->
 <div id="lightbox" onclick="closeLightbox()">
     <span id="close-btn">&times;</span>
-    <img id="lightbox-img" src="">
+    <img id="lightbox-img" src="" alt="放大檢視地圖">
 </div>
 
 <script>
+    // 切換頁籤邏輯
+    function switchMap(index) {
+        const buttons = document.querySelectorAll('.tab-btn');
+        const cards = document.querySelectorAll('.image-card');
+
+        // 移除所有 active 類別
+        buttons.forEach(btn => btn.classList.remove('active'));
+        cards.forEach(card => card.classList.remove('active'));
+
+        // 為點擊的項目加上 active 類別
+        buttons[index].classList.add('active');
+        cards[index].classList.add('active');
+    }
+
+    // Lightbox 放大邏輯
     function openLightbox(src) {
         document.getElementById('lightbox').style.display = 'flex';
         document.getElementById('lightbox-img').src = src;
